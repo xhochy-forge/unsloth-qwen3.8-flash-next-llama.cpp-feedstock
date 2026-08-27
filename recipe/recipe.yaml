@@ -1,7 +1,7 @@
 context:
   name: llama.cpp
-  version: "2026.07.30"
-  build: 1
+  version: "2026.08.27"
+  build: 0
   # ensure arm_variant_type gets detected as a used variable
   touch_arm_variant_type: ${{ arm_variant_type if (linux and aarch64) else "None" }}
 
@@ -10,14 +10,14 @@ package:
   version: ${{ version }}
 
 source:
-  git: https://github.com/danielhanchen/llama.cpp
-  rev: "d69b7e606af7f59d9e81c5c81a5c7ce0dad197e1"
+  git: https://github.com/unslothai/llama.cpp
+  rev: "6c5afc86ae84448ae4d744e357017e2c490ad9c3"
 
 build:
   # See https://conda-forge.org/docs/user/tipsandtricks/#installing-cuda-enabled-packages-like-tensorflow-and-pytorch
   # Similar to https://github.com/conda-forge/jaxlib-feedstock/blob/4471f8d7b0096942f228a9c5a4324bfa75139e22/recipe/recipe.yaml#L22
   number: ${{ build if cuda_compiler_version == "None" else build + 200 }}
-  string: 'unsloth_inkling_{%- if cuda_compiler_version != "None" -%}cuda${{ cuda_compiler_version | replace(".", "") }}_h${{ hash }}_${{ build }}{%- elif (osx and x86_64) or cuda_compiler_version == "None" -%}cpu_${{ blas_impl }}_h${{ hash }}_${{ build }}{%- elif osx and arm64 -%}mps_h${{ hash }}_${{ build }}{%- endif -%}'
+  string: 'unsloth_qwen3.8_flash_next_{%- if cuda_compiler_version != "None" -%}cuda${{ cuda_compiler_version | replace(".", "") }}_h${{ hash }}_${{ build }}{%- elif (osx and x86_64) or cuda_compiler_version == "None" -%}cpu_${{ blas_impl }}_h${{ hash }}_${{ build }}{%- elif osx and arm64 -%}mps_h${{ hash }}_${{ build }}{%- endif -%}'
   skip: (osx and x86_64) or win
 
   script:
@@ -290,9 +290,9 @@ tests:
         # Check CMake configuration files
           - echo "Checking CMake configuration files..."
           - check_file "$PREFIX/lib/cmake/ggml/ggml-config.cmake" "ggml-config.cmake"
-          - check_file "$PREFIX/lib/cmake/ggml/ggml-version.cmake" "ggml-version.cmake"
+          - check_file "$PREFIX/lib/cmake/ggml/ggml-config-version.cmake" "ggml-config-version.cmake"
           - check_file "$PREFIX/lib/cmake/llama/llama-config.cmake" "llama-config.cmake"
-          - check_file "$PREFIX/lib/cmake/llama/llama-version.cmake" "llama-version.cmake"
+          - check_file "$PREFIX/lib/cmake/llama/llama-config-version.cmake" "llama-config-version.cmake"
 
         # Check libraries
           - echo "Checking library files..."
@@ -328,9 +328,9 @@ tests:
                 - cuda-version ${{ cuda_compiler_version }}
 
 about:
-  homepage: https://github.com/danielhanchen/llama.cpp/tree/add-inkling
-  repository: https://github.com/danielhanchen/llama.cpp/tree/add-inkling
-  summary: Port of Facebook's LLaMA model in C/C++ (build of https://github.com/danielhanchen/llama.cpp/tree/add-inkling)
+  homepage: https://github.com/unslothai/llama.cpp
+  repository: https://github.com/unslothai/llama.cpp
+  summary: Port of Facebook's LLaMA model in C/C++ (build of https://github.com/unslothai/llama.cpp/tree/qwen4exp/qwen3.8-flash-next)
   license: MIT
   license_file: LICENSE
 
